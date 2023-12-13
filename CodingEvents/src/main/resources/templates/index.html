@@ -1,15 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Coding Events</title>
-</head>
-<body>
+<head th:replace="~{fragments :: head}">
+<body class="container">
     <h1>Coding Events</h1>
-<nav>
-    <ul>
-        <li><a href="/events" style="text-decoration: none">All Events</a></li>
-    </ul>
-</nav>
+    <header th:replace="~{fragments :: header}"></header> <!-- primul argument se refera la numele fisierului si al doilea la numele fragmentului -->
 </body>
 </html>

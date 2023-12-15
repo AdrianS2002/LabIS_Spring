@@ -1,2 +1,4 @@
-package org.example.tutorial.data;public interface EventRepository {
+package org.example.tutorial.data;
+
+public interface EventRepository {
 }

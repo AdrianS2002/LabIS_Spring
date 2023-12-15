@@ -2,20 +2,18 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: head}">
 <body class="container">
-<h1 style="color: brown">All Events</h1>
+<h1>Create Event</h1>
+
 <header th:replace="~{fragments :: header}"></header>
 
 <table class="table table-striped">
     <thead>
-        <tr>
-            <th>Event Name</th>
-        </tr>
+    <tr>
+        <th>Tag Name</th>
+    </tr>
     </thead>
-
-    <tr th:each="event : ${events}">
-        <td>
-            <td><a th:href="'/events/detail?eventId=' + ${event.id}" th:text="${event.name}"></a>
-        </td>
+    <tr th:each="tag : ${tags}">
+        <td th:text="${tag.displayName}"></td>
     </tr>
 
 </table>

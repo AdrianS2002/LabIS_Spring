@@ -1,4 +1,7 @@
-body {
-    font-size: 20px;
-    color: gold;
+body{
+    font-size: 14px;
+}
+
+.error {
+   color: red;
 }

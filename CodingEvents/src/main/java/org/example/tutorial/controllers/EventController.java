@@ -1,26 +1,48 @@
 package org.example.tutorial.controllers;
 
-import org.example.tutorial.data.EventData;
+import org.example.tutorial.data.EventCategoryRepository;
+import org.example.tutorial.data.EventRepository;
 import org.example.tutorial.models.Event;
-import org.example.tutorial.models.EventType;
+import org.example.tutorial.models.EventCategory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("events")
 public class EventController {
 
+    @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private EventCategoryRepository eventCategoryRepository;
+
+
     @GetMapping
-    public String displayAllEvents(Model model) {
-        model.addAttribute("title", "All Events");
-        model.addAttribute("events", EventData.getAll());
+    public String displayEvents(@RequestParam(required = false) Integer categoryId, Model model) {
+
+        if(categoryId ==null)
+        {
+            model.addAttribute("title", "All Events");
+            model.addAttribute("events", eventRepository.findAll());
+        }else{
+            Optional<EventCategory> result =  eventCategoryRepository.findById(categoryId);
+            if (result.isEmpty()){
+               model.addAttribute("title", "Invalid Category ID: "+ categoryId);
+            }else{
+                EventCategory category = result.get();
+                model.addAttribute("title", "Events in category: "+ category.getName());
+                model.addAttribute("events",category.getEvents());
+            }
+        }
+
         return "events/index";
     }
 
@@ -28,7 +50,7 @@ public class EventController {
     public String displayCreateEventForm(Model model) {
         model.addAttribute("title","Create Event");
         model.addAttribute(new Event());
-        model.addAttribute("types",EventType.values());
+        model.addAttribute("categories",eventCategoryRepository.findAll());
         return "events/create";
     }
 
@@ -39,8 +61,7 @@ public class EventController {
             model.addAttribute("title","Create Event");
             return "events/create";
         }
-
-        EventData.add(newEvent);
+        eventRepository.save(newEvent);
         return "redirect:/events";   // redirect to the root path
     }
 
@@ -48,14 +69,14 @@ public class EventController {
     @GetMapping("delete")
     public String displayDeleteEventForm(Model model){
         model.addAttribute("title","Delete Events");
-        model.addAttribute("events", EventData.getAll());
+        model.addAttribute("events", eventRepository.findAll());
         return "events/delete";
     }
     @PostMapping("delete")
     public String processDeleteEventsForm(@RequestParam(required = false) int[] eventIds){
         if(eventIds != null){
             for(int id: eventIds){
-                EventData.remove(id);
+                eventRepository.deleteById(id);
             }
         }
         return "redirect:/events";
